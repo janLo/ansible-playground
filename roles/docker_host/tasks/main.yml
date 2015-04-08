@@ -17,7 +17,7 @@
     mode: 500
 
 - name: re-read facts after adding custom fact
-  setup: filter=ansible_loca
+  setup: filter=ansible_local
 
 - name: mount docker fs
   mount:
