@@ -1,0 +1,21 @@
+# deb http://{{ apt_mirror }}/debian/ jessie main
+
+deb {{ apt_mirror }} jessie main contrib non-free
+deb-src {{ apt_mirror }} jessie main contrib non-free
+
+deb http://security.debian.org/ jessie/updates main contrib non-free
+deb-src http://security.debian.org/ jessie/updates main contrib non-free
+
+# jessie-updates, previously known as 'volatile'
+deb {{ apt_mirror }} jessie-updates main contrib non-free
+deb-src {{ apt_mirror }} jessie-updates main contrib non-free
+
+# jessie-backports, previously on backports.debian.org
+deb {{ apt_mirror }} jessie-backports main
+deb-src {{ apt_mirror }} jessie-backports main
+{% for item in apt_extra_dists %}
+
+# {{ item.dist }} repo
+deb {{ apt_mirror }} {{ item.dist }} main contrib non-free
+deb-src {{ apt_mirror }} {{ item.dist }} main contrib non-free
+{% endfor %}
