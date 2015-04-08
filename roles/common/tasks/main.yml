@@ -1,0 +1,24 @@
+# vim: set ft=yaml sw=2 expandtab tabstop=2 softtabstop=2 smartindent tw=80:
+---
+- name: update system
+  apt:
+    update_cache: yes
+    upgrade: safe
+
+- name: install common packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - vim
+    - tmux
+    - bash-completion
+    - ncurses-term
+
+- name: copy base configs
+  copy: src={{item.src}} dest={{item.dst}}
+  with_items:
+      - {src: etc/vim/vimrc.local, dst: /etc/vim/vimrc.local}
+      - {src: root/dircolors-256, dst: /root/.dircolors-256}
+      - {src: root/bashrc, dst: /root/.bashrc}
+      - {src: root/tmux.conf, dst: /root/.tmux.conf}
