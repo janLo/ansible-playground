@@ -1,0 +1,8 @@
+- name: docker from experimental
+  apt:
+    name: docker.io
+    state: latest
+    default_release: experimental
+
+- name: restart docker
+  service: name=docker state=restarted
