@@ -1,0 +1,14 @@
+# vim: set ft=yaml sw=2 expandtab ts=2:
+---
+- hosts: box-ng
+  remote_user: root
+  vars:
+    apt_mirror: http://ftp.de.debian.org/debian/
+    apt_extra_dists:
+      - { dist: sid, prio: 150 }
+      - { dist: experimental, prio: 145 }
+    docker_dev: /dev/vda
+  roles:
+    - apt_config
+    - common
+    - docker_host
