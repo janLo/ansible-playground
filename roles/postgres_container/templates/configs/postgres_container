@@ -1,0 +1,2 @@
+IMAGE=postgres:{{ pg.version }}
+DATA_CONTAINER={{ pg.data_container }}

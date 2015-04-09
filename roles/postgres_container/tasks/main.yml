@@ -1,0 +1,55 @@
+# vim: set ft=ansible:
+---
+- name: create data container
+  docker:
+    image: busybox
+    name: "{{ pg.data_container }}"
+    state: present
+    volumes:
+      - "/var/lib/postgresql/data"
+  register: pg_data_container
+
+- name: init data volume
+  docker:
+    image: "postgres:{{ pg.version }}"
+    name: "init_pg_db"
+    state: started
+    detach: True
+    volumes_from:
+      - "{{ pg.data_container }}"
+    ports:
+      - 127.0.0.1:5432:5432
+    env:
+      POSTGRES_PASSWORD: "{{ pg.password }}"
+    command: "postgres --single"
+  when: pg_data_container|changed
+
+- name: install container config
+  template:
+    src: configs/postgres_container
+    dest: "/etc/container_environment/{{ pg.service_name }}"
+
+- name: install container service
+  copy:
+    src: units/postgres_container.service
+    dest: "/etc/systemd/system/{{ pg.service_name }}.service"
+
+- name: install psycopg2
+  apt: name=python-psycopg2 state=latest
+
+- name: Wait for data container init finish
+  wait_for: port=5432 state=stopped
+  when: pg_data_container|changed
+
+- name: remove data init container
+  docker:
+    name: "init_pg_db"
+    image: "postgres:{{ pg.version }}"
+    state: absent
+  when: pg_data_container|changed
+
+- name: "start service"
+  service:
+    name: "{{ pg.service_name }}.service"
+    state: started
+    enabled: yes
