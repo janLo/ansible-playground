@@ -12,3 +12,4 @@
     - apt_config
     - common
     - docker_host
+    - postgres_container
