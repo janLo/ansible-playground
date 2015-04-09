@@ -26,3 +26,9 @@
     fstype: btrfs
     state: mounted
   notify: restart docker
+
+- name: install python-docker
+  apt: name=python-docker state=latest
+
+- name: generate container config dir
+  file: state=directory recurse=yes path=/etc/container_environment
