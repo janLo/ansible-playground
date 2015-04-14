@@ -28,11 +28,13 @@
   template:
     src: configs/postgres_container
     dest: "/etc/container_environment/{{ pg.service_name }}"
+  register: _pg_container_config
 
 - name: install container service
   copy:
     src: units/postgres_container.service
     dest: "/etc/systemd/system/{{ pg.service_name }}.service"
+  register: _pg_container_service
 
 - name: install psycopg2
   apt: name=python-psycopg2 state=latest
@@ -48,8 +50,24 @@
     state: absent
   when: pg_data_container|changed
 
-- name: "start service"
+- name: reload systemd
+  command: systemctl daemon-reload
+  when: _pg_container_config|changed or _pg_container_service|changed
+
+- name: restart service
+  service:
+    name: "{{ pg.service_name }}.service"
+    state: restarted
+    enabled: yes
+  register: _pg_restarted
+  when: _pg_container_config|changed or _pg_container_service|changed
+
+- name: start service
   service:
     name: "{{ pg.service_name }}.service"
     state: started
     enabled: yes
+  when: _pg_restarted|skipped
+
+- name: wait for postgres
+  wait_for: port=5432 state=started
