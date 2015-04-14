@@ -1,5 +1,6 @@
 pg:
   version: 9.4
+  image: postgres
   password: "{{ postgres_container_password }}"
   data_container: "postgres-data"
-  service_name: "postgres_container"
+  service_name: "postgres"
