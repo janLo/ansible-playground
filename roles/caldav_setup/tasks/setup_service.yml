@@ -1,0 +1,31 @@
+- name: install {{ service_name }} config
+  template:
+    src: configs/{{ service_name }}
+    dest: /etc/container_environment/{{ service_name }}
+  register: _config_install
+
+- name: install {{ service_name }} config
+  template:
+    src: units/{{ service_name }}.service
+    dest: /etc/systemd/system/{{ service_name }}.service 
+  register: _unit_install
+
+- name: reload systemd
+  command: systemctl daemon-reload
+  when: _config_install|changed or _unit_install|changed
+
+- name: restart {{ service_name }}
+  service:
+    name: "{{ service_name }}.service"
+    enabled: yes
+    state: restarted
+  register: _restarted
+  when: _config_install|changed or _unit_install|changed
+
+- name: start service {{ service_name }}
+  service:
+    name: "{{ service_name }}.service"
+    enabled: yes
+    state: restarted
+  register: _restarted
+  when: _restarted|skipped

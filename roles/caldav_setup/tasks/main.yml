@@ -1,0 +1,77 @@
+# vim: set ft=ansible:
+---
+- name: create davical database users
+  postgresql_user:
+    login_host: 127.0.0.1
+    login_password: "{{ postgres_container_password }}"
+    name: "{{ item.value.username }}"
+    password: "{{ item.value.password }}"
+    role_attr_flags: NOSUPERUSER
+    state: present
+  with_dict: davical_db_users
+
+- name: create davical database
+  postgresql_db:
+    login_host: 127.0.0.1
+    login_password: "{{ postgres_container_password }}"
+    name: davical_{{ davical_instance_name }}
+    encoding: 'UTF-8'
+    template: template0
+    owner: "{{ davical_db_users.dba.username }}"
+    state: present
+  register: _davical_database
+
+- name: try to copy backup to host
+  copy:
+    src: "{{ davical_backup_file }}"
+    dest: "/tmp/_davical_backup_file.sql"
+  register: _davical_backup_file
+  when: _davical_database|changed and davical_backup_file
+  ignore_errors: yes
+
+- name: init davical database
+  docker: &DAVICAL_INIT_CONTAINER
+    name: davical_db_init
+    image: "janlo/davical:tool"
+    state: started
+    ports:
+      - "127.0.0.1:8082:80"
+    env: &DAVICAL_INIT_ENV
+      DAVICAL_SERVER_NAME: "{{ davical_server_name }}"
+      DAVICAL_DB_NAME: davical_{{ davical_instance_name }}
+      DAVICAL_DB_USER: "{{ davical_db_users.app.username }}" 
+      DAVICAL_DB_ADMIN: "{{ davical_db_users.dba.username }}" 
+      DAVICAL_DB_PASS: "{{ davical_db_users.app.password }}"
+      DAVICAL_DB_ADMIN_PASS: "{{ davical_db_users.dba.password }}"
+    links:
+      - "{{ davical_db_container }}:postgres"
+  when: _davical_database|changed and _davical_backup_file|skipped
+
+- name: init davical database with backup
+  docker:
+    <<: *DAVICAL_INIT_CONTAINER
+    volumes:
+      - "/tmp/_davical_backup_file.sql:/tmp/_davical_backup_file.sql"
+    env:
+      <<: *DAVICAL_INIT_ENV
+      DAVICAL_BACKUP: "/tmp/_davical_backup_file.sql"
+  when: _davical_database|changed and not _davical_backup_file|skipped
+
+- name: wait for initialization finish
+  wait_for: port=8082 state=stopped
+  when: _davical_database|changed
+
+- name: remove davical init container
+  docker:
+    name: davical_db_init
+    image: "janlo/davical:tool"
+    state: absent
+  when: _davical_database|changed
+
+- name: remove backup sql file
+  file:
+    dest: "/tmp/_davical_backup_file.sql"
+    state: absent
+  when: _davical_database|changed and not _davical_backup_file|failed
+
+- include: setup_service.yml service_name={{ davical.service_name }}

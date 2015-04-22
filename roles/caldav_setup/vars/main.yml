@@ -1,0 +1,9 @@
+davical:
+  version: latest
+  image: janlo/davical
+  service_name: davical
+
+agendav:
+  version: old
+  image: janlo/agendav
+  service_name: agendav_old

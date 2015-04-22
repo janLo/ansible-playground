@@ -1,0 +1,14 @@
+davical_db_users:
+  dba:
+    username: davical_dba
+    password: xxx
+  app:
+    username: davical_app
+    password: xxx
+
+davical_instance_name: default
+davical_db_container: postgres
+
+davical_server_name: test.losinski.de
+
+davical_backup_file: False

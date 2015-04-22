@@ -1,0 +1,10 @@
+IMAGE={{ davical.image }}:{{ davical.version }}
+
+DAVICAL_SERVER_NAME="{{ davical_server_name }}"
+DAVICAL_DB_NAME=davical_{{ davical_instance_name }}
+DAVICAL_DB_USER="{{ davical_db_users.app.username }}" 
+DAVICAL_DB_ADMIN="{{ davical_db_users.dba.username }}" 
+DAVICAL_DB_PASS="{{ davical_db_users.app.password }}"
+DAVICAL_DB_ADMIN_PASS="{{ davical_db_users.dba.password }}"
+
+DB_CONTAINER={{ davical_db_container }}
