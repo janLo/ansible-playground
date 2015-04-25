@@ -1,4 +1,4 @@
-# vim: set ft=yaml sw=2 expandtab tabstop=2 softtabstop=2 smartindent tw=80:
+# vim: set ft=ansible:
 ---
 - name: update system
   apt:
@@ -14,6 +14,8 @@
     - tmux
     - bash-completion
     - ncurses-term
+    - htop
+    - fail2ban
 
 - name: copy base configs
   copy: src={{item.src}} dest={{item.dst}}
