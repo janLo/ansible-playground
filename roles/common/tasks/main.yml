@@ -16,6 +16,7 @@
     - ncurses-term
     - htop
     - fail2ban
+    - etckeeper
 
 - name: copy base configs
   copy: src={{item.src}} dest={{item.dst}}
