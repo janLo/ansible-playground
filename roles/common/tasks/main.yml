@@ -10,6 +10,7 @@
     name: "{{ item }}"
     state: latest
   with_items:
+    - mosh
     - vim
     - tmux
     - bash-completion
