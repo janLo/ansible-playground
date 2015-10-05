@@ -5,7 +5,7 @@
   vars:
     apt_mirror: http://ftp.de.debian.org/debian/
     apt_extra_dists:
-      - { dist: sid, prio: 150 }
+      - { dist: unstable, prio: 150 }
       - { dist: experimental, prio: 145 }
     docker_dev: /dev/vda
   roles:
@@ -13,3 +13,5 @@
     - common
     - docker_host
     - postgres_container
+    - davical
+    - nginx
