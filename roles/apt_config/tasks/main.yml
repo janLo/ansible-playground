@@ -2,16 +2,19 @@
   template:
     src: etc/apt/preferences.d/dist_pinning.j2
     dest: /etc/apt/preferences.d/dist_pinning
-  notify: update package list
+  register: _dist_prio
 
 - name: configure sources
   template:
     src: etc/apt/sources.list.j2
     dest: /etc/apt/sources.list
-  notify: update package list
+  register: _dist_sources
 
 - name: disable install recommend
   copy:
     src: etc/apt/apt.conf.d/06norecommends
     dest: /etc/apt/apt.conf.d/06norecommends
 
+- name: update package list
+  apt: update_cache=yes
+  when: _dist_prio|changed or _dist_sources|changed

@@ -1,6 +1,6 @@
-{% for item in apt_extra_dists %}
-
+{%- for item in apt_extra_dists %}
 Package: *
 Pin: release a={{ item.dist }}
 Pin-Priority: {{ item.prio }}
+
 {% endfor %}
