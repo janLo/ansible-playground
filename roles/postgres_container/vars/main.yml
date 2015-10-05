@@ -4,3 +4,5 @@ pg:
   password: "{{ postgres_container_password }}"
   data_container: "postgres-data"
   service_name: "postgres"
+
+postgres_container_image: "{{ pg.image }}:{{ pg.version }}"
