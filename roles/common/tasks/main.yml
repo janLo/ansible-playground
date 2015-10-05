@@ -26,3 +26,9 @@
       - {src: root/dircolors-256, dst: /root/.dircolors-256}
       - {src: root/bashrc, dst: /root/.bashrc}
       - {src: root/tmux.conf, dst: /root/.tmux.conf}
+
+- name: enable google DNS
+  lineinfile:
+    dest: /etc/dhcp/dhclient.conf
+    line: "prepend domain-name-servers 8.8.8.8;"
+    state: present
