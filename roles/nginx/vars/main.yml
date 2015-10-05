@@ -1,0 +1,19 @@
+# vim: set ft=ansible
+---
+
+webproxy:
+  image: nginx
+  version: latest
+  service_name: "{{ webproxy_service_name }}"
+  configs: /etc/webproxy/sites
+  certs: /etc/webproxy/certs
+  logs: /var/log/webproxy
+
+proxy_sites:
+  - server_name: caldav.losinski.de
+    target_service: davical
+    target_host: davical
+    target_port: 80
+    template: caldav.conf.j2
+
+

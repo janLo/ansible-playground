@@ -1,0 +1,30 @@
+[Unit]
+Description=Containerized Nginx
+After=docker.service
+Requires=docker.service
+{% for site in proxy_sites -%}
+After={{ site.target_service }}.service
+PartOf={{ site.target_service }}.service
+{% endfor %}
+
+[Service]
+TimeoutStartSec=0
+EnvironmentFile=/etc/container_environment/%p
+ExecStartPre=-/usr/bin/docker kill %p
+ExecStartPre=-/usr/bin/docker rm %p
+ExecStartPre=-/usr/bin/docker pull ${IMAGE}
+ExecStart=/usr/bin/docker run \
+	--name %p \
+	-p 443:443 \
+	-p 80:80 \
+	-v ${SITE_LOCATION}:/etc/nginx/conf.d \
+	-v ${CERT_LOCATION}:/etc/nginx/certs \
+	-v ${LOG_LOCATION}:/var/log/nginx \
+	{% for site in proxy_sites %}
+	--link {{ site.target_service }}:{{ site.target_host }} \
+	{% endfor %}
+	${IMAGE}
+ExecStop=/usr/bin/docker stop %p
+
+[Install]
+RequiredBy=multi-user.target

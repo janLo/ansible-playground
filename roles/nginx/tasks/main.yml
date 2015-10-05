@@ -1,0 +1,49 @@
+# vim: set ft=ansible
+---
+- name: create proxy directories
+  file:
+    name: "{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    - "{{ webproxy.configs }}"
+    - "{{ webproxy.certs }}"
+    - "{{ webproxy.logs }}"
+
+- name: install nginx sites
+  template:
+    src: "configs/sites/{{ item.template }}"
+    dest: "{{ webproxy.configs }}/{{ item.server_name }}.conf"
+  with_items: proxy_sites
+
+- name: install nginx config
+  template:
+    src: configs/webproxy_container.j2
+    dest: "/etc/container_environment/{{ webproxy.service_name }}"
+  register: _webproxy_container_config
+
+- name: install nginx service
+  template:
+    src: units/webproxy.service.j2
+    dest: "/etc/systemd/system/{{ webproxy.service_name }}.service"
+  register: _webproxy_container_service
+
+- name: reload systemd
+  command: systemctl daemon-reload
+  when: _webproxy_container_config|changed or _webproxy_container_service|changed
+
+- name: restart service
+  service:
+    name: "{{ webproxy.service_name }}.service"
+    state: restarted
+    enabled: yes
+  register: _webproxy_restarted
+  when: _webproxy_container_config|changed or _webproxy_container_service|changed
+
+- name: start service
+  service:
+    name: "{{ webproxy.service_name }}.service"
+    state: started
+    enabled: yes
+  when: _webproxy_restarted|skipped
+ 
