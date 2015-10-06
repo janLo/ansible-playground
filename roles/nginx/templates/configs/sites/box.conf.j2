@@ -27,5 +27,8 @@ server {
 
     root {{ webproxy.static }}/{{ site.content.name }};
 
+    location / {
+        index index.html;
+    }
 }
 
