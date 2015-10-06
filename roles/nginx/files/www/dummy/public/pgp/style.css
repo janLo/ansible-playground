@@ -1,0 +1,38 @@
+html,body {
+  background:#FFF;
+  color:#555555;
+  font-family: 'Trebuchet MS', verdana, sans-serif;
+  font-size:14px;
+  line-height:1.3em;
+  margin:.5em; padding:0;
+}
+h1, h2 {
+  color:#333333;  
+  border-bottom:1px solid gray;
+}
+h1 {
+  line-height:1.7em;
+  font-size:1.7em;
+  border-bottom:1px solid gray;
+  padding:0px 5px 0px 0.3em;
+  margin:0em 0 0em ;
+  text-align:left;
+  letter-spacing: -0.018em;  
+}
+h2{    
+  letter-spacing: -0.018em;
+  color:#444444;
+  padding:1em 1em 0 1em;
+  margin:0.3em 0 0.5em 0;
+}
+pre {
+  background:#EEEEEE;
+  width:37em;
+  padding:1em;
+}
+pre#id_norm {
+  width:42.5em;
+}
+pre#id_im {
+  width:42.5em;
+}

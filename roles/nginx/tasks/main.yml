@@ -9,12 +9,28 @@
     - "{{ webproxy.configs }}"
     - "{{ webproxy.certs }}"
     - "{{ webproxy.logs }}"
+    - "{{ webproxy.static }}"
 
 - name: install nginx sites
   template:
     src: "configs/sites/{{ item.template }}"
     dest: "{{ webproxy.configs }}/{{ item.server_name }}.conf"
   with_items: proxy_sites
+
+- name: try to copy keys and certs
+  copy:
+    src: "{{ item }}"
+    dest: "{{ webproxy.certs }}/{{ item }}"
+  with_fileglob:
+    - certs/*
+  register: _webproxy_container_keys
+  ignore_errors: yes
+
+- name: copry static site contents
+  copy:
+    src: "{{ item.content.source }}"
+    dest: "{{ webproxy.static }}/{{ item.content.name }}"
+  with_items: proxy_sites|has_member("content")
 
 - name: install nginx config
   template:
@@ -38,7 +54,7 @@
     state: restarted
     enabled: yes
   register: _webproxy_restarted
-  when: _webproxy_container_config|changed or _webproxy_container_service|changed
+  when: _webproxy_container_config|changed or _webproxy_container_service|changed or _webproxy_container_keys|changed
 
 - name: start service
   service:

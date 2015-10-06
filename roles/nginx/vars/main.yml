@@ -8,12 +8,18 @@ webproxy:
   configs: /etc/webproxy/sites
   certs: /etc/webproxy/certs
   logs: /var/log/webproxy
+  static: /var/www
 
 proxy_sites:
   - server_name: caldav.losinski.de
-    target_service: davical
-    target_host: davical
-    target_port: 80
+    target:
+      service: davical
+      host: davical
+      port: 80
     template: caldav.conf.j2
-
+  - server_name: box.losinski.de
+    content:
+      name: box_content
+      source: dummy
+    template: box.conf.j2
 

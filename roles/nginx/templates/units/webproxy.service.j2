@@ -2,9 +2,9 @@
 Description=Containerized Nginx
 After=docker.service
 Requires=docker.service
-{% for site in proxy_sites -%}
-After={{ site.target_service }}.service
-PartOf={{ site.target_service }}.service
+{% for site in proxy_sites|has_member("target") -%}
+After={{ site.target.service }}.service
+PartOf={{ site.target.service }}.service
 {% endfor %}
 
 [Service]
@@ -20,8 +20,9 @@ ExecStart=/usr/bin/docker run \
 	-v ${SITE_LOCATION}:/etc/nginx/conf.d \
 	-v ${CERT_LOCATION}:/etc/nginx/certs \
 	-v ${LOG_LOCATION}:/var/log/nginx \
-	{% for site in proxy_sites %}
-	--link {{ site.target_service }}:{{ site.target_host }} \
+	-v ${STATIC_LOCATION}:/var/www \
+	{% for site in proxy_sites|has_member("target") %}
+	--link {{ site.target.service }}:{{ site.target.host }} \
 	{% endfor %}
 	${IMAGE}
 ExecStop=/usr/bin/docker stop %p
