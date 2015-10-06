@@ -8,6 +8,7 @@
       - { dist: unstable, prio: 150 }
       - { dist: experimental, prio: 145 }
     docker_dev: /dev/vda
+    davical_backup_file: backup/caldav_dump.sql
   roles:
     - apt_config
     - common
