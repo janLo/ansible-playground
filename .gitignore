@@ -3,3 +3,5 @@ ansible.iml
 roles/nginx/files/certs/*.crt
 roles/nginx/files/certs/*.key
 roles/davical/files/backup/*.sql
+*.pyc
+*.pyo
