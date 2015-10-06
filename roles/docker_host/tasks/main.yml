@@ -1,6 +1,8 @@
-- name: install docker
-  apt: name=docker.io state=latest
-  notify: docker from experimental
+- name: install btrfs-tools
+  apt: name=btrfs-tools state=latest
+
+- name: create docker mountpoint
+  file: name=/var/lib/docker state=directory
 
 - name: create docker fs
   filesystem:
@@ -27,8 +29,14 @@
     state: mounted
   notify: restart docker
 
+- name: install docker
+  apt: name=docker.io state=latest default_release=jessie-backports
+
+- name: start docker
+  service: name=docker state=started enabled=true
+
 - name: install python-docker
-  apt: name=python-docker state=latest
+  apt: name=python-docker state=latest default_release=sid
 
 - name: generate container config dir
   file: state=directory recurse=yes path=/etc/container_environment
