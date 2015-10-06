@@ -20,6 +20,6 @@ proxy_sites:
   - server_name: box.losinski.de
     content:
       name: box_content
-      source: dummy
+      source: www/dummy
     template: box.conf.j2
 
