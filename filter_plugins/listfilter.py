@@ -1,7 +1,7 @@
 
 
 def has_member(mylist, member=None):
-    return [item for item in mylist if member in mylist]
+    return [item for item in mylist if member in item]
 
 class FilterModule(object):
 
