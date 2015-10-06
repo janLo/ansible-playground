@@ -1,2 +1,4 @@
 *.swp
 ansible.iml
+roles/nginx/files/certs/*.crt
+roles/nginx/files/certs/*.key
