@@ -20,7 +20,7 @@
 - name: try to copy keys and certs
   copy:
     src: "{{ item }}"
-    dest: "{{ webproxy.certs }}/{{ item }}"
+    dest: "{{ webproxy.certs }}/{{ item|basename }}"
   with_fileglob:
     - certs/*
   register: _webproxy_container_keys
@@ -30,7 +30,7 @@
   copy:
     src: "{{ item.content.source }}"
     dest: "{{ webproxy.static }}/{{ item.content.name }}"
-  with_items: proxy_sites|has_member("content")
+  with_items: proxy_sites|has_member(member="content")
 
 - name: install nginx config
   template:
