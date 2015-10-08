@@ -1,0 +1,3 @@
+postgres_container_password: "{{ lookup('pass', 'box-ng/services/postgres') }}"
+davical_db_dba_password: "{{ lookup('pass', 'box-ng/services/davical_dba') }}"
+davical_db_app_password: "{{ lookup('pass', 'box-ng/services/davical_app') }}"
