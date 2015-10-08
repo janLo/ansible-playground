@@ -1,10 +1,10 @@
 davical_db_users:
   dba:
     username: davical_dba
-    password: xxx
+    password: "{{ davical_db_dba_password }}"
   app:
     username: davical_app
-    password: xxx
+    password: "{{ davical_db_app_password }}"
 
 davical_instance_name: default
 davical_db_container: postgres
