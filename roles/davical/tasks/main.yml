@@ -8,7 +8,16 @@
     password: "{{ item.value.password }}"
     role_attr_flags: NOSUPERUSER
     state: present
+  register: _davical_db_users
   with_dict: davical_db_users
+
+- name: try to copy backup to host
+  copy:
+    src: "{{ davical_backup_file }}"
+    dest: "/tmp/_davical_backup_file.sql"
+  register: _davical_backup_file
+  when: davical_backup_file != "False" and _davical_db_users|changed
+  ignore_errors: yes
 
 - name: create davical database
   postgresql_db:
@@ -20,14 +29,7 @@
     owner: "{{ davical_db_users.dba.username }}"
     state: present
   register: _davical_database
-
-- name: try to copy backup to host
-  copy:
-    src: "{{ davical_backup_file }}"
-    dest: "/tmp/_davical_backup_file.sql"
-  register: _davical_backup_file
-  when: _davical_database|changed and davical_backup_file
-  ignore_errors: yes
+  when: _davical_backup_file|skipped
 
 - name: init davical database
   docker: &DAVICAL_INIT_CONTAINER
@@ -49,13 +51,19 @@
 
 - name: init davical database with backup
   docker:
-    <<: *DAVICAL_INIT_CONTAINER
+    image: postgres
+    name: davical_db_init
+    ports:
+      - "127.0.0.1:8082:80"
+    env:
+      PGPASSWORD: "{{ postgres_container_password }}"
     volumes:
       - "/tmp/_davical_backup_file.sql:/tmp/_davical_backup_file.sql"
-    env:
-      <<: *DAVICAL_INIT_ENV
-      DAVICAL_BACKUP: "/tmp/_davical_backup_file.sql"
-  when: _davical_database|changed and not _davical_backup_file|skipped
+    links:
+      - "{{ davical_db_container }}:postgres"
+    state: started
+    command: bash -c 'psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres < /tmp/_davical_backup_file.sql'
+  when: _davical_database|skipped and not _davical_backup_file|skipped
 
 - name: wait for initialization finish
   wait_for: port=8082 state=stopped
