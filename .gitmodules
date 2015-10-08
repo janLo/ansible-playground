@@ -1,0 +1,3 @@
+[submodule "lookup_plugins"]
+	path = lookup_plugins
+	url = ./lookup_plugins
