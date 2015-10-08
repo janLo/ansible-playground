@@ -22,4 +22,8 @@ proxy_sites:
       name: box_content
       source: www/dummy/
     template: box.conf.j2
+    proxy:
+      - location: caldav_server
+        host: davical
+        port: 80
 
