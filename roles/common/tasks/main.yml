@@ -18,6 +18,7 @@
     - htop
     - fail2ban
     - etckeeper
+    - tcpdump
 
 - name: copy base configs
   copy: src={{item.src}} dest={{item.dst}}
