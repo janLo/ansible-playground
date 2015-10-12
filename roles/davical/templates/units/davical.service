@@ -2,6 +2,8 @@
 Description=Containerized Davical
 After=docker.service
 Requires=docker.service
+After={{ davical_db_container }}.service
+Requires={{ davical_db_container }}.service
 
 [Service]
 TimeoutStartSec=0
