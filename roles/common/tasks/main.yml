@@ -17,6 +17,7 @@
     - ncurses-term
     - htop
     - fail2ban
+    - python-pyinotify
     - etckeeper
     - tcpdump
 
