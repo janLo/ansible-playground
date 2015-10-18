@@ -1,0 +1,12 @@
+    ssl_certificate           /etc/nginx/certs/{{ site.server_name }}.crt;
+    ssl_certificate_key       /etc/nginx/certs/{{ site.server_name }}.key;
+    ssl_dhparam	              /etc/nginx/certs/{{ site.server_name }}.DH2048.pem;
+
+    ssl on;
+
+    ssl_session_cache  builtin:1000  shared:SSL:10m;
+    ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
+
+    # ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
+    ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+    ssl_prefer_server_ciphers on;
