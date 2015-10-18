@@ -1,0 +1,20 @@
+{% set site = item %}
+server {
+    listen 80;
+    server_name {{ site.server_name }};
+    return 301 https://$host$request_uri;
+}
+
+server {
+
+    listen 443;
+    server_name {{ site.server_name }};
+
+
+{% include "common_ssl.j2" %}
+
+    access_log            /var/log/nginx/{{ site.server_name }}.access.log;
+    error_log            /var/log/nginx/{{ site.server_name }}.error.log;
+
+{% block specific %}{% endblock %}
+}
