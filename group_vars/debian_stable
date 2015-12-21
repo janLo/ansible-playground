@@ -1,0 +1,8 @@
+# vim: set ft=ansible
+
+apt_mirror: http://ftp.de.debian.org/debian/
+apt_extra_dists:
+  - { dist: jessie-backports, prio: 150 }
+  - { dist: unstable, prio: 149 }
+  - { dist: experimental, prio: 145 }
+
