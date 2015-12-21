@@ -10,16 +10,24 @@
     name: "{{ item }}"
     state: latest
   with_items:
-    - mosh
     - vim
-    - tmux
     - bash-completion
     - ncurses-term
-    - htop
     - fail2ban
     - python-pyinotify
     - etckeeper
+
+- name: install extra packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - mosh
+    - tmux
+    - htop
     - tcpdump
+  when: default_extra_packages is defined
+
 
 - name: copy base configs
   copy: src={{item.src}} dest={{item.dst}}
@@ -32,5 +40,6 @@
 - name: enable google DNS
   lineinfile:
     dest: /etc/dhcp/dhclient.conf
-    line: "prepend domain-name-servers 8.8.8.8;"
+    line: "prepend domain-name-servers {{ enforce_dns_server | join(', ') }};"
     state: present
+  when: enforce_dns_server is defined

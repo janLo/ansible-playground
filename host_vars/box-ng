@@ -1,3 +1,8 @@
 postgres_container_password: "{{ lookup('pass', 'box-ng/services/postgres') }}"
 davical_db_dba_password: "{{ lookup('pass', 'box-ng/services/davical_dba') }}"
 davical_db_app_password: "{{ lookup('pass', 'box-ng/services/davical_app') }}"
+
+default_extra_packages: true
+
+enforce_dns_server:
+  - "8.8.8.8"
