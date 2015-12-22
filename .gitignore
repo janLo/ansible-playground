@@ -4,5 +4,10 @@ roles/nginx/files/certs/*.crt
 roles/nginx/files/certs/*.key
 roles/nginx/files/certs/*.pem
 roles/davical/files/backup/*.sql
+roles/vpn_client/files/keys/*/*.crt
+roles/vpn_client/files/keys/*/*.key
+roles/vpn_server/files/keys/*.crt
+roles/vpn_server/files/keys/*.key
+roles/vpn_server/files/keys/*.pem
 *.pyc
 *.pyo
