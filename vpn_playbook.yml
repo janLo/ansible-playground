@@ -1,0 +1,18 @@
+# vim: set ft=ansible
+
+- hosts: vpn_servers
+  remote_user: root
+  roles:
+    - { role: apt_config, tags: [server, base] }
+    - { role: common,     tags: [server, base] }
+    - { role: vpn_server, tags: [server, config] }
+
+- hosts: vpn_clients
+  remote_user: root
+  roles:
+    - {role: vpn_client, tags: [client, config] }
+
+- hosts: vpn
+  remote_user: root
+  roles:
+    - { role: vpn_names, tags: [config] }
