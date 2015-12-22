@@ -27,7 +27,7 @@
   ignore_errors: yes
   notify: restart openvpn
 
-- neme: flush handlers
+- name: flush handlers
   meta: flush_handlers
 
 - name: start openvpn
