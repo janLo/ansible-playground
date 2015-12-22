@@ -1,0 +1,12 @@
+# vim: set ft=ansible
+---
+vpn:
+  server_routes:
+    - "172.24.10.0/24"
+  static_clients:
+    - name: brettchen.vpn.losinski.de
+      net: 10.8.1.0/30
+    - name: nexus5.vpn.losinski.de
+      net: 10.8.1.4/30
+    - name: banana-one.vpn.losinski.de
+      net: 10.8.1.8/30
