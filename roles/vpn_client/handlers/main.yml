@@ -1,0 +1,10 @@
+# vim: set ft=ansible
+---
+- name: restart openvpn
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - openvpn
+    - openvpn@client
+

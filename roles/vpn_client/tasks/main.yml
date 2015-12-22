@@ -1,0 +1,36 @@
+# vim: set ft=ansible
+---
+- name: install openvpn
+  apt:
+    name: openvpn
+    state: latest
+  notify: restart openvpn
+
+- name: install config
+  template:
+    src: client.conf.j2
+    dest: /etc/openvpn/client.conf
+  notify: restart openvpn
+
+- name: create key dir
+  file:
+    name: /etc/openvpn/keys
+    state: directory
+
+- name: copy keys
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/openvpn/keys/{{ item | basename }}"
+    mode: 0600
+  with_fileglob:
+    - "keys/{{ inventory_hostname }}/*"
+  ignore_errors: yes
+  notify: restart openvpn
+
+- neme: flush handlers
+  meta: flush_handlers
+
+- name: start openvpn
+  service:
+    name: openvpn
+    state: started
