@@ -1,0 +1,5 @@
+ifconfig-push {{ item.net | ipaddr('1') | ipaddr('address') }} {{ item.net | ipaddr('2') | ipaddr('address') }}
+{% for route in vpn.server_routes %}
+push "route {{ route | ipaddr('network') }}  {{ route | ipaddr('netmask') }} vpn_gateway"
+{% endfor %}
+
